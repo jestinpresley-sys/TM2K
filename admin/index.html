@@ -268,7 +268,8 @@ let db = null, shows = [], mixes = [];
 // ---------- Auth ----------
 async function boot() {
   if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return show("viewSetup");
-  db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  const baseUrl = cfg.supabaseUrl.trim().replace(/\/+$/, "").replace(/\/rest\/v1$/, "");
+  db = window.supabase.createClient(baseUrl, cfg.supabaseAnonKey);
   db.auth.onAuthStateChange((_event, session) => route(session));
   const { data } = await db.auth.getSession();
   route(data.session);

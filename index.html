@@ -325,7 +325,7 @@ const todayISO = () => { const t = new Date(); return `${t.getFullYear()}-${Stri
 async function loadContent() {
   const cfg = window.TM2K_CONFIG || {};
   if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) return FALLBACK;
-  const base = cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/";
+  const base = cfg.supabaseUrl.replace(/\/+$/, "").replace(/\/rest\/v1$/, "") + "/rest/v1/";
   const headers = { apikey: cfg.supabaseAnonKey, Authorization: `Bearer ${cfg.supabaseAnonKey}` };
   const get = async path => {
     const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 6000);
