@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07060f">
+<title>T.M.2.K Admin</title>
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@900&family=Archivo:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: the jersey's back panel as a control desk. One column, thumb-sized controls, tabs for Shows and Mixes. */
+:root {
+  color-scheme: dark;
+  --ground: #07060f;
+  --panel: #110e22;
+  --field: #0b0918;
+  --line: #2a2348;
+  --bone: #eef1ff;
+  --dust: #9a97c4;
+  --pink: #ff2e93;
+  --neon: #2ec4ff;
+  --violet: #7b3cff;
+  --danger: #ff5a5a;
+  --display: "Big Shoulders Stencil Display", Impact, "Arial Narrow", sans-serif;
+  --body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: radial-gradient(50rem 24rem at 100% -10%, color-mix(in srgb, var(--violet) 20%, transparent), transparent 70%), var(--ground);
+  color: var(--bone); font: 400 1rem/1.5 var(--body);
+  padding-inline: 16px; padding-block: env(safe-area-inset-top, 0px) calc(40px + env(safe-area-inset-bottom, 0px));
+  min-height: 100vh;
+}
+.wrap { max-width: 760px; margin: 0 auto; }
+a { color: var(--neon); }
+button, input, textarea, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
+
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.brand { font: 900 2rem/1 var(--display); color: var(--neon); text-shadow: 0 0 16px color-mix(in srgb, var(--violet) 80%, transparent); letter-spacing: .01em; }
+.brand span { color: var(--pink); }
+.brand small { font: 600 .7rem/1 var(--mono); letter-spacing: .16em; color: var(--dust); text-shadow: none; margin-left: 8px; vertical-align: middle; }
+.who { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font: 400 .78rem/1.3 var(--mono); color: var(--dust); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 18px; border-radius: 3px; border: 1px solid var(--pink); background: var(--pink); color: var(--ground); font: 700 .8rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; text-decoration: none; }
+.btn.ghost { background: transparent; color: var(--bone); border-color: var(--line); }
+.btn.ghost:hover { border-color: var(--neon); color: var(--neon); }
+.btn.danger { background: transparent; color: var(--danger); border-color: color-mix(in srgb, var(--danger) 50%, var(--line)); }
+.btn.small { min-height: 38px; padding: 8px 12px; font-size: .72rem; }
+.btn[disabled] { opacity: .5; cursor: wait; }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 20px; }
+h1, h2 { font: 900 2.2rem/.95 var(--display); text-transform: uppercase; margin: 0 0 6px; letter-spacing: .01em; }
+h2 { font-size: 1.8rem; }
+.hint { color: var(--dust); font-size: .92rem; margin: 0 0 16px; }
+
+form { display: grid; gap: 14px; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 14px; }
+label { display: grid; gap: 6px; font: 600 .7rem/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dust); }
+label.check { display: flex; align-items: center; gap: 10px; text-transform: none; letter-spacing: 0; font: 500 .95rem/1.3 var(--body); color: var(--bone); }
+input[type=text], input[type=email], input[type=password], input[type=url], input[type=date], input[type=number], textarea {
+  width: 100%; min-height: 46px; padding: 10px 12px; border-radius: 3px; border: 1px solid var(--line); background: var(--field);
+  font: 400 1rem/1.4 var(--body); color: var(--bone);
+}
+textarea { min-height: 90px; resize: vertical; }
+input:focus, textarea:focus { border-color: var(--neon); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--neon) 25%, transparent); }
+input[type=checkbox] { width: 22px; height: 22px; accent-color: var(--pink); }
+.req::after { content: " *"; color: var(--pink); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.fetchrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+@media (max-width: 480px) { .fetchrow { grid-template-columns: 1fr; } }
+
+.tabs { display: flex; gap: 4px; margin: 22px 0 18px; border-bottom: 1px solid var(--line); }
+.tabs button { flex: 1; min-height: 48px; background: none; border: 0; border-bottom: 3px solid transparent; color: var(--dust); font: 900 1.4rem/1 var(--display); text-transform: uppercase; cursor: pointer; letter-spacing: .02em; }
+.tabs button[aria-selected=true] { color: var(--bone); border-bottom-color: var(--pink); }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.group { margin: 22px 0 8px; font: 600 .7rem/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--pink); }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.item { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; }
+.item .date { text-align: center; font-variant-numeric: tabular-nums; }
+.item .date b { display: block; font: 900 1.9rem/.9 var(--display); color: var(--neon); }
+.item .date span { font: 600 .62rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dust); }
+.item img { width: 64px; height: 64px; object-fit: cover; border-radius: 2px; display: block; background: var(--field); }
+.item h3 { margin: 0 0 2px; font: 700 1rem/1.25 var(--body); overflow-wrap: anywhere; }
+.item p { margin: 0; color: var(--dust); font-size: .85rem; overflow-wrap: anywhere; }
+.item .actions { grid-column: 2; margin-top: 6px; }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font: 600 .62rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; background: color-mix(in srgb, var(--pink) 18%, transparent); color: var(--pink); margin-left: 6px; vertical-align: middle; }
+.empty { color: var(--dust); padding: 18px; border: 1px dashed var(--line); border-radius: 4px; text-align: center; }
+
+dialog { width: min(640px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--bone); }
+dialog::backdrop { background: rgb(4 3 10 / .75); }
+dialog .card { border: 0; }
+.dlg-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+
+.msg { padding: 12px 14px; border-radius: 3px; font-size: .92rem; border: 1px solid var(--line); background: var(--field); }
+.msg.err { border-color: color-mix(in srgb, var(--danger) 60%, var(--line)); color: #ffc2c2; }
+.msg.ok { border-color: color-mix(in srgb, var(--neon) 60%, var(--line)); }
+#toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--bone); color: var(--ground); padding: 12px 18px; border-radius: 3px; font: 700 .85rem/1 var(--mono); letter-spacing: .06em; box-shadow: 0 8px 30px rgb(0 0 0 / .5); z-index: 10; }
+.center { max-width: 420px; margin: 48px auto 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">T.M<span>.</span>2<span>.</span>K<small>ADMIN</small></div>
+    <div class="who">
+      <a href="../" target="_blank" rel="noopener">View site ↗</a>
+      <span id="userEmail"></span>
+      <button class="btn ghost small" id="signOut" type="button" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <!-- Not set up -->
+  <section id="viewSetup" class="center" hidden>
+    <div class="card">
+      <h1>Not connected</h1>
+      <p class="hint">This page needs the database details in <b>config.js</b> (Supabase project URL and anon key). The setup steps are in the README.</p>
+    </div>
+  </section>
+
+  <!-- Sign in -->
+  <section id="viewLogin" class="center" hidden>
+    <div class="card">
+      <h1>Sign in</h1>
+      <p class="hint">Edit mixes and show dates on the T.M.2.K site.</p>
+      <form id="loginForm">
+        <label>Email <input type="email" id="loginEmail" autocomplete="username" required></label>
+        <label>Password <input type="password" id="loginPassword" autocomplete="current-password"></label>
+        <div class="actions">
+          <button class="btn" type="submit" id="loginBtn">Sign in</button>
+          <button class="btn ghost" type="button" id="magicBtn">Email me a link</button>
+        </div>
+        <div id="loginMsg" class="msg" hidden></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Signed in but not an editor -->
+  <section id="viewDenied" class="center" hidden>
+    <div class="card">
+      <h1>No access</h1>
+      <p class="hint">You're signed in, but this account isn't on the editor list. Ask Jestin to add your email.</p>
+    </div>
+  </section>
+
+  <!-- Editor -->
+  <section id="viewEditor" hidden>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tabShows" aria-selected="true" aria-controls="panelShows" type="button">Shows</button>
+      <button role="tab" id="tabMixes" aria-selected="false" aria-controls="panelMixes" type="button">Mixes</button>
+    </div>
+
+    <div id="panelShows" role="tabpanel" aria-labelledby="tabShows">
+      <div class="toolbar">
+        <p class="hint" style="margin:0">Shows move from Upcoming to Past on their own after the date.</p>
+        <button class="btn" type="button" id="addShow">+ Add show</button>
+      </div>
+      <div class="group">Upcoming</div>
+      <ul class="list" id="upcomingShows"></ul>
+      <div class="group">Past</div>
+      <ul class="list" id="pastShows"></ul>
+    </div>
+
+    <div id="panelMixes" role="tabpanel" aria-labelledby="tabMixes" hidden>
+      <div class="toolbar">
+        <p class="hint" style="margin:0">Paste a SoundCloud link and the title and cover fill in.</p>
+        <button class="btn" type="button" id="addMix">+ Add mix</button>
+      </div>
+      <ul class="list" id="mixList"></ul>
+    </div>
+  </section>
+</div>
+
+<!-- Show editor -->
+<dialog id="showDlg" aria-labelledby="showDlgTitle">
+  <div class="card">
+    <div class="dlg-head"><h2 id="showDlgTitle">Add show</h2><button class="btn ghost small" type="button" data-close>Close</button></div>
+    <form id="showForm">
+      <div class="row">
+        <label><span class="req">Date</span><input type="date" id="sDate" required></label>
+        <label>Set time<input type="text" id="sTime" placeholder="11:15 PM"></label>
+      </div>
+      <label class="check"><input type="checkbox" id="sDayUnknown"> I only know the month</label>
+      <label><span class="req">Event name</span><input type="text" id="sTitle" required placeholder="Bass Playground"></label>
+      <div class="row">
+        <label>Venue<input type="text" id="sVenue" placeholder="The Crack Fox"></label>
+        <label>Address<input type="text" id="sAddress" placeholder="1114 Olive St"></label>
+      </div>
+      <label>Details<textarea id="sDetails" placeholder="Lineup, promoter, what the night is about"></textarea></label>
+      <label>Ticket link<input type="url" id="sTickets" placeholder="https://"></label>
+      <label>Recording link<input type="url" id="sRecording" placeholder="https://soundcloud.com/..."></label>
+      <div id="showMsg" class="msg err" hidden></div>
+      <div class="actions">
+        <button class="btn" type="submit" id="showSave">Save show</button>
+        <button class="btn danger" type="button" id="showDelete" hidden>Delete</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- Mix editor -->
+<dialog id="mixDlg" aria-labelledby="mixDlgTitle">
+  <div class="card">
+    <div class="dlg-head"><h2 id="mixDlgTitle">Add mix</h2><button class="btn ghost small" type="button" data-close>Close</button></div>
+    <form id="mixForm">
+      <div class="fetchrow">
+        <label><span class="req">SoundCloud link</span><input type="url" id="mUrl" required placeholder="https://soundcloud.com/user-298775178/..."></label>
+        <button class="btn ghost" type="button" id="mFetch">Fill in details</button>
+      </div>
+      <div id="fetchMsg" class="msg" hidden></div>
+      <label><span class="req">Title</span><input type="text" id="mTitle" required></label>
+      <div class="row">
+        <label>Label<input type="text" id="mTag" placeholder="Live set, Series, Livestream mix"></label>
+        <label>Release date<input type="date" id="mDate"></label>
+      </div>
+      <label>Description<textarea id="mBlurb" placeholder="One or two lines about the mix"></textarea></label>
+      <label>Cover image link<input type="url" id="mArt" placeholder="Fills in from SoundCloud"></label>
+      <div class="row">
+        <label>Plays<input type="number" id="mPlays" min="0" inputmode="numeric"></label>
+        <label>Likes<input type="number" id="mLikes" min="0" inputmode="numeric"></label>
+      </div>
+      <label class="check"><input type="checkbox" id="mFeatured"> Feature this mix at the top</label>
+      <input type="hidden" id="mTrackId">
+      <div id="mixMsg" class="msg err" hidden></div>
+      <div class="actions">
+        <button class="btn" type="submit" id="mixSave">Save mix</button>
+        <button class="btn danger" type="button" id="mixDelete" hidden>Delete</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="../config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const todayISO = () => { const t = new Date(); return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`; };
+const parts = d => { const [y, m, day] = String(d || "").split("-").map(Number); return { y, m, day }; };
+const blank = v => { const t = String(v ?? "").trim(); return t === "" ? null : t; };
+const num = v => { const t = String(v ?? "").trim(); return t === "" ? null : Math.max(0, parseInt(t, 10) || 0); };
+
+const views = ["viewSetup", "viewLogin", "viewDenied", "viewEditor"];
+const show = id => views.forEach(v => ($(v).hidden = v !== id));
+
+let toastTimer;
+function toast(text) {
+  const t = $("toast"); t.textContent = text; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 2400);
+}
+function message(el, text, kind = "err") {
+  el.hidden = !text; el.textContent = text || ""; el.className = "msg " + kind;
+}
+
+const cfg = window.TM2K_CONFIG || {};
+let db = null, shows = [], mixes = [];
+
+// ---------- Auth ----------
+async function boot() {
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return show("viewSetup");
+  db = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  db.auth.onAuthStateChange((_event, session) => route(session));
+  const { data } = await db.auth.getSession();
+  route(data.session);
+}
+
+let routedFor = undefined;
+async function route(session) {
+  const email = session?.user?.email || null;
+  if (email === routedFor) return;
+  routedFor = email;
+  $("userEmail").textContent = email || "";
+  $("signOut").hidden = !email;
+  if (!email) return show("viewLogin");
+  const { data, error } = await db.from("admins").select("email").limit(1);
+  if (error || !data || !data.length) return show("viewDenied");
+  show("viewEditor");
+  await Promise.all([loadShows(), loadMixes()]);
+}
+
+$("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const email = $("loginEmail").value.trim(), password = $("loginPassword").value;
+  if (!password) return message($("loginMsg"), "Enter your password, or use “Email me a link”.");
+  $("loginBtn").disabled = true; message($("loginMsg"), "");
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  $("loginBtn").disabled = false;
+  if (error) message($("loginMsg"), "That email and password don't match. Try again or use “Email me a link”.");
+});
+
+$("magicBtn").addEventListener("click", async () => {
+  const email = $("loginEmail").value.trim();
+  if (!email) return message($("loginMsg"), "Enter your email first.");
+  $("magicBtn").disabled = true;
+  const { error } = await db.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: false } });
+  $("magicBtn").disabled = false;
+  if (error) message($("loginMsg"), "Couldn't send a link to that email. Check the address, or ask Jestin to add your account.");
+  else message($("loginMsg"), `Sign-in link sent to ${email}. Open it on this device.`, "ok");
+});
+
+$("signOut").addEventListener("click", () => db.auth.signOut());
+
+// ---------- Tabs ----------
+function selectTab(which) {
+  const isShows = which === "shows";
+  $("tabShows").setAttribute("aria-selected", isShows); $("tabMixes").setAttribute("aria-selected", !isShows);
+  $("panelShows").hidden = !isShows; $("panelMixes").hidden = isShows;
+  try { localStorage.setItem("tm2k-admin-tab", which); } catch {}
+}
+$("tabShows").addEventListener("click", () => selectTab("shows"));
+$("tabMixes").addEventListener("click", () => selectTab("mixes"));
+try { if (localStorage.getItem("tm2k-admin-tab") === "mixes") selectTab("mixes"); } catch {}
+
+document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
+
+// ---------- Shows ----------
+async function loadShows() {
+  const { data, error } = await db.from("shows").select("*").order("show_date", { ascending: false });
+  if (error) return toast("Couldn't load shows. Refresh to try again.");
+  shows = data; renderShows();
+}
+
+function showItem(s) {
+  const p = parts(s.show_date);
+  const li = document.createElement("li"); li.className = "item";
+  li.innerHTML = `
+    <div class="date"><b>${s.day_unknown ? "—" : String(p.day).padStart(2, "0")}</b><span>${MONTHS[p.m - 1]} ${p.y}</span></div>
+    <div><h3>${esc(s.title)}</h3><p>${esc([s.venue, s.set_time].filter(Boolean).join(" · "))}</p></div>
+    <div class="actions"><button class="btn ghost small" type="button">Edit</button></div>`;
+  li.querySelector("button").addEventListener("click", () => openShow(s));
+  return li;
+}
+
+function renderShows() {
+  const today = todayISO();
+  const up = shows.filter(s => s.show_date >= today).sort((a, b) => a.show_date.localeCompare(b.show_date));
+  const past = shows.filter(s => s.show_date < today);
+  const fill = (el, items, empty) => {
+    el.replaceChildren(...items.map(showItem));
+    if (!items.length) el.innerHTML = `<li class="empty">${empty}</li>`;
+  };
+  fill($("upcomingShows"), up, "No upcoming shows. Tap “Add show” when a date is booked.");
+  fill($("pastShows"), past, "Past shows will collect here.");
+}
+
+let editingShow = null;
+function openShow(s) {
+  editingShow = s || null;
+  $("showDlgTitle").textContent = s ? "Edit show" : "Add show";
+  $("sDate").value = s?.show_date || ""; $("sTime").value = s?.set_time || "";
+  $("sDayUnknown").checked = !!s?.day_unknown; $("sTitle").value = s?.title || "";
+  $("sVenue").value = s?.venue || ""; $("sAddress").value = s?.address || "";
+  $("sDetails").value = s?.details || ""; $("sTickets").value = s?.ticket_url || ""; $("sRecording").value = s?.recording_url || "";
+  $("showDelete").hidden = !s; message($("showMsg"), "");
+  $("showDlg").showModal();
+}
+$("addShow").addEventListener("click", () => openShow(null));
+
+$("showForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const row = {
+    show_date: $("sDate").value, day_unknown: $("sDayUnknown").checked, set_time: blank($("sTime").value),
+    title: $("sTitle").value.trim(), venue: blank($("sVenue").value), address: blank($("sAddress").value),
+    details: blank($("sDetails").value), ticket_url: blank($("sTickets").value), recording_url: blank($("sRecording").value)
+  };
+  if (!row.show_date || !row.title) return message($("showMsg"), "Add a date and an event name.");
+  $("showSave").disabled = true;
+  const q = editingShow ? db.from("shows").update(row).eq("id", editingShow.id) : db.from("shows").insert(row);
+  const { error } = await q;
+  $("showSave").disabled = false;
+  if (error) return message($("showMsg"), "Couldn't save. Check your connection and try again.");
+  $("showDlg").close(); toast(editingShow ? "Show updated" : "Show added"); loadShows();
+});
+
+$("showDelete").addEventListener("click", async () => {
+  if (!editingShow || !confirm(`Delete “${editingShow.title}”? This can't be undone.`)) return;
+  const { error } = await db.from("shows").delete().eq("id", editingShow.id);
+  if (error) return message($("showMsg"), "Couldn't delete. Try again.");
+  $("showDlg").close(); toast("Show deleted"); loadShows();
+});
+
+// ---------- Mixes ----------
+async function loadMixes() {
+  const { data, error } = await db.from("mixes").select("*").order("featured", { ascending: false }).order("released_on", { ascending: false, nullsFirst: false });
+  if (error) return toast("Couldn't load mixes. Refresh to try again.");
+  mixes = data; renderMixes();
+}
+
+function renderMixes() {
+  const el = $("mixList");
+  el.replaceChildren(...mixes.map(m => {
+    const li = document.createElement("li"); li.className = "item";
+    const p = parts(m.released_on);
+    li.innerHTML = `
+      ${/^https:\/\//.test(m.artwork_url || "") ? `<img src="${esc(m.artwork_url)}" alt="">` : `<div class="date"><b>♪</b></div>`}
+      <div><h3>${esc(m.title)}${m.featured ? '<span class="pill">Featured</span>' : ""}</h3><p>${esc([m.tag, p.y ? `${MONTHS[p.m - 1]} ${p.y}` : ""].filter(Boolean).join(" · "))}</p></div>
+      <div class="actions"><button class="btn ghost small" type="button">Edit</button></div>`;
+    li.querySelector("button").addEventListener("click", () => openMix(m));
+    return li;
+  }));
+  if (!mixes.length) el.innerHTML = `<li class="empty">No mixes yet. Tap “Add mix” and paste a SoundCloud link.</li>`;
+}
+
+let editingMix = null;
+function openMix(m) {
+  editingMix = m || null;
+  $("mixDlgTitle").textContent = m ? "Edit mix" : "Add mix";
+  $("mUrl").value = m?.soundcloud_url || ""; $("mTitle").value = m?.title || ""; $("mTag").value = m?.tag || "";
+  $("mDate").value = m?.released_on || ""; $("mBlurb").value = m?.blurb || ""; $("mArt").value = m?.artwork_url || "";
+  $("mPlays").value = m?.plays ?? ""; $("mLikes").value = m?.likes ?? ""; $("mFeatured").checked = !!m?.featured;
+  $("mTrackId").value = m?.track_id || "";
+  $("mixDelete").hidden = !m; message($("mixMsg"), ""); message($("fetchMsg"), "");
+  $("mixDlg").showModal();
+}
+$("addMix").addEventListener("click", () => openMix(null));
+
+$("mFetch").addEventListener("click", async () => {
+  const url = $("mUrl").value.trim();
+  if (!/^https:\/\/(on\.|m\.)?soundcloud\.com\//i.test(url)) return message($("fetchMsg"), "Paste a SoundCloud link that starts with https://soundcloud.com/");
+  $("mFetch").disabled = true; message($("fetchMsg"), "Looking it up…", "ok");
+  try {
+    const r = await fetch("https://soundcloud.com/oembed?format=json&url=" + encodeURIComponent(url));
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json();
+    const id = (decodeURIComponent(j.html || "").match(/tracks\/(\d+)/) || [])[1] || "";
+    $("mTrackId").value = id;
+    if (!$("mTitle").value) $("mTitle").value = String(j.title || "").replace(/\s+by\s+Thatman2Know\s*$/i, "");
+    if (!$("mBlurb").value && j.description) $("mBlurb").value = j.description;
+    if (j.thumbnail_url) $("mArt").value = j.thumbnail_url.replace(/-t\d+x\d+\./, "-t500x500.");
+    if (!$("mDate").value) $("mDate").value = todayISO();
+    message($("fetchMsg"), "Filled in from SoundCloud. Check the title and description, then save.", "ok");
+  } catch {
+    message($("fetchMsg"), "Couldn't read that link. Make sure the track is public, or fill the fields in by hand.");
+  } finally { $("mFetch").disabled = false; }
+});
+
+$("mixForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const row = {
+    soundcloud_url: $("mUrl").value.trim(), track_id: blank($("mTrackId").value), title: $("mTitle").value.trim(),
+    tag: blank($("mTag").value), released_on: blank($("mDate").value), blurb: blank($("mBlurb").value),
+    artwork_url: blank($("mArt").value), plays: num($("mPlays").value), likes: num($("mLikes").value), featured: $("mFeatured").checked
+  };
+  if (!row.soundcloud_url || !row.title) return message($("mixMsg"), "Add the SoundCloud link and a title.");
+  $("mixSave").disabled = true;
+  if (row.featured) await db.from("mixes").update({ featured: false }).eq("featured", true);
+  const q = editingMix ? db.from("mixes").update(row).eq("id", editingMix.id) : db.from("mixes").insert(row);
+  const { error } = await q;
+  $("mixSave").disabled = false;
+  if (error) return message($("mixMsg"), "Couldn't save. Check your connection and try again.");
+  $("mixDlg").close(); toast(editingMix ? "Mix updated" : "Mix added"); loadMixes();
+});
+
+$("mixDelete").addEventListener("click", async () => {
+  if (!editingMix || !confirm(`Delete “${editingMix.title}” from the site? It stays on SoundCloud.`)) return;
+  const { error } = await db.from("mixes").delete().eq("id", editingMix.id);
+  if (error) return message($("mixMsg"), "Couldn't delete. Try again.");
+  $("mixDlg").close(); toast("Mix deleted"); loadMixes();
+});
+
+boot();
+</script>
+</body>
+</html>

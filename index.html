@@ -151,6 +151,13 @@ h2 { margin: 0; font: 900 clamp(2.4rem, 7vw, 4rem)/.9 var(--display); text-trans
 .shows p a { color: var(--pink); text-decoration: none; font-weight: 700; }
 .shows p a:hover { text-decoration: underline; }
 .shows .venue { font: 400 .78rem/1.4 var(--mono); color: var(--bone); text-align: right; }
+.sub { margin: 28px 0 10px; font: 600 .72rem/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--pink); }
+.sub:first-of-type { margin-top: 0; }
+.shows:empty { display: none; }
+.shows li.upcoming { border-left: 3px solid var(--pink); padding-left: 14px; }
+.shows li.upcoming h3 { color: var(--neon); }
+.empty { margin: 0; padding-block: 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--dust); }
+.empty a { color: var(--pink); font-weight: 700; }
 @media (max-width: 640px) {
   .shows li { grid-template-columns: 72px minmax(0, 1fr); }
   .shows .venue { grid-column: 2; text-align: left; color: var(--dust); }
@@ -218,7 +225,7 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); display: f
   <section id="mixes">
     <div class="head">
       <h2>Mixes</h2>
-      <span class="meta">4 sets on SoundCloud · newest first</span>
+      <span class="meta" id="mixMeta">On SoundCloud · newest first</span>
     </div>
     <div class="mixes" id="mixList"></div>
   </section>
@@ -226,35 +233,15 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); display: f
   <section id="shows">
     <div class="head">
       <h2>Shows</h2>
-      <span class="meta">St. Louis · past dates</span>
+      <span class="meta" id="showMeta">St. Louis</span>
     </div>
-    <ol class="shows">
-      <li>
-        <time datetime="2026-07-14"><b>14</b><span>Jul 2026</span></time>
-        <div><h3>Twitch Tuesdays</h3><p>Special guest on the Psychonauts Collective livestream</p></div>
-        <span class="venue">Twitch · Live</span>
-      </li>
-      <li>
-        <time datetime="2026-05-01"><b>01</b><span>May 2026</span></time>
-        <div><h3>First One's Free: Party for Potential</h3><p>Downright Events × Mississippi Underground. A night for a good cause.</p></div>
-        <span class="venue">Mississippi Underground · 1441 N 2nd St</span>
-      </li>
-      <li>
-        <time datetime="2026-04-11"><b>11</b><span>Apr 2026</span></time>
-        <div><h3>Bass Playground</h3><p>The first one. With Sadiize, Lunar Riot, Gingersnap × Larious, Ms. Chiff and Hayes.</p></div>
-        <span class="venue">The Crack Fox · 1114 Olive St</span>
-      </li>
-      <li>
-        <time datetime="2025-08-16"><b>16</b><span>Aug 2025</span></time>
-        <div><h3>Gene Farris (Chicago)</h3><p>Front room, Downright Entertainment × Party Diva</p></div>
-        <span class="venue">Mississippi Underground</span>
-      </li>
-      <li>
-        <time datetime="2025-07"><b>JUL</b><span>2025</span></time>
-        <div><h3>Headbangers Paradise</h3><p>Support for Wonky Willa &amp; Twopercent with B&amp;W STL. <a href="https://soundcloud.com/user-298775178/road-to-headbanger-paradise" target="_blank" rel="noopener">Hear the set ↗</a></p></div>
-        <span class="venue">Red Flag</span>
-      </li>
-    </ol>
+    <h3 class="sub">Upcoming</h3>
+    <ol class="shows" id="upcomingList"></ol>
+    <p class="empty" id="noUpcoming" hidden>No dates announced yet. Want T.M.2.K on your lineup? <a href="#booking">Book him</a>.</p>
+    <div id="pastBlock">
+      <h3 class="sub">Past</h3>
+      <ol class="shows" id="pastList"></ol>
+    </div>
   </section>
 
   <section id="about">
@@ -297,47 +284,87 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); display: f
   </footer>
 </div>
 
+<script src="config.js"></script>
 <script>
-// HOSTED = true on a real web host (GitHub Pages, Netlify): uses SoundCloud's embedded players and his real artwork.
-// HOSTED = false inside a Claude artifact, which can't embed other sites: generated cover art + links to SoundCloud.
-const HOSTED = true;
+// Content comes from the Supabase database set in config.js (Cam edits it at /admin).
+// If config.js is empty or the database can't be reached, the site shows FALLBACK below.
+const HOSTED = true; // false only for previews that can't embed SoundCloud
 
-const MIXES = [
-  { id: "2253650108", slug: "who-tf-is-tm2k", title: "WHO TF IS T.M.2.K?", date: "Jan 2026", plays: 3666, likes: 197, tag: "Livestream mix",
-    art: "artworks-sUAEyanOrXFPUalh-UKJWsw-t500x500.jpg", featured: true,
-    blurb: "Cut from a livestream: familiar tunes run through his own Ableton edits. The one to start with." },
-  { id: "2123642814", slug: "road-to-headbanger-paradise", title: "Opening Set for Wonky Willa & Twopercent", date: "Jul 2025", plays: 417, likes: 38, tag: "Live set",
-    art: "artworks-iRz9F6ByRyCSYOH3-kxd80w-t500x500.jpg",
-    blurb: "His opening set for Wonky Willa and Twopercent. A whole journey, start to finish." },
-  { id: "2017615557", slug: "for-my-feral-friends-pt-2", title: "For My Feral Friends Pt. 2", date: "Jan 2025", plays: 137, tag: "Series",
-    art: "artworks-nUz1KoNpQHTWv2Qz-Ne7gOg-t500x500.jpg",
-    blurb: "Flips and doubles, heavy tunes and fun ones. His first recorded mix on Rekordbox." },
-  { id: "1935563318", slug: "for-my-feral-friends", title: "For My Feral Friends Pt. 1", date: "Oct 2024", plays: 169, tag: "Series",
-    art: "artworks-JzO6WcUIjRWzy0Nh-awh6Og-t500x500.jpg",
-    blurb: "Bass house into dubstep flips with hip-hop, built from what his friends love." }
-];
+const FALLBACK = {
+  mixes: [
+    { soundcloud_url: "https://soundcloud.com/user-298775178/who-tf-is-tm2k", track_id: "2253650108", title: "WHO TF IS T.M.2.K?", tag: "Livestream mix", released_on: "2026-01-25",
+      blurb: "Cut from a livestream: familiar tunes run through his own Ableton edits. The one to start with.",
+      artwork_url: "https://i1.sndcdn.com/artworks-sUAEyanOrXFPUalh-UKJWsw-t500x500.jpg", plays: 3666, likes: 197, featured: true },
+    { soundcloud_url: "https://soundcloud.com/user-298775178/road-to-headbanger-paradise", track_id: "2123642814", title: "Opening Set for Wonky Willa & Twopercent", tag: "Live set", released_on: "2025-07-25",
+      blurb: "His opening set for Wonky Willa and Twopercent. A whole journey, start to finish.",
+      artwork_url: "https://i1.sndcdn.com/artworks-iRz9F6ByRyCSYOH3-kxd80w-t500x500.jpg", plays: 417, likes: 38 },
+    { soundcloud_url: "https://soundcloud.com/user-298775178/for-my-feral-friends-pt-2", track_id: "2017615557", title: "For My Feral Friends Pt. 2", tag: "Series", released_on: "2025-01-25",
+      blurb: "Flips and doubles, heavy tunes and fun ones. His first recorded mix on Rekordbox.",
+      artwork_url: "https://i1.sndcdn.com/artworks-nUz1KoNpQHTWv2Qz-Ne7gOg-t500x500.jpg", plays: 137 },
+    { soundcloud_url: "https://soundcloud.com/user-298775178/for-my-feral-friends", track_id: "1935563318", title: "For My Feral Friends Pt. 1", tag: "Series", released_on: "2024-10-15",
+      blurb: "Bass house into dubstep flips with hip-hop, built from what his friends love.",
+      artwork_url: "https://i1.sndcdn.com/artworks-JzO6WcUIjRWzy0Nh-awh6Og-t500x500.jpg", plays: 169 }
+  ],
+  shows: [
+    { show_date: "2026-07-14", title: "Twitch Tuesdays", details: "Special guest on the Psychonauts Collective livestream", venue: "Twitch · Live" },
+    { show_date: "2026-05-01", set_time: "11:15 PM", title: "First One's Free: Party for Potential", details: "Downright Events × Mississippi Underground. A night for a good cause.", venue: "Mississippi Underground", address: "1441 N 2nd St" },
+    { show_date: "2026-04-11", title: "Bass Playground", details: "The first one. With Sadiize, Lunar Riot, Gingersnap × Larious, Ms. Chiff and Hayes.", venue: "The Crack Fox", address: "1114 Olive St" },
+    { show_date: "2025-08-16", title: "Gene Farris (Chicago)", details: "Front room, Downright Entertainment × Party Diva", venue: "Mississippi Underground", address: "1441 N 2nd St" },
+    { show_date: "2025-07-01", day_unknown: true, title: "Headbangers Paradise", details: "Support for Wonky Willa & Twopercent with B&W STL.", venue: "Red Flag", recording_url: "https://soundcloud.com/user-298775178/road-to-headbanger-paradise" }
+  ]
+};
 
-const fmt = n => n.toLocaleString("en-US");
-const scUrl = m => `https://soundcloud.com/user-298775178/${m.slug}`;
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = u => /^https:\/\//i.test(String(u || "")) ? String(u) : "";
+const fmt = n => Number(n).toLocaleString("en-US");
+const parts = d => { const [y, m, day] = String(d || "").split("-").map(Number); return { y, m, day }; };
+const monthYear = d => { const p = parts(d); return p.y && p.m ? `${MONTHS[p.m - 1]} ${p.y}` : ""; };
+const todayISO = () => { const t = new Date(); return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`; };
 
-function coverArt(m, i) {
-  // Generated cover: stacked waveform bars seeded from the track id.
+async function loadContent() {
+  const cfg = window.TM2K_CONFIG || {};
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) return FALLBACK;
+  const base = cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/";
+  const headers = { apikey: cfg.supabaseAnonKey, Authorization: `Bearer ${cfg.supabaseAnonKey}` };
+  const get = async path => {
+    const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 6000);
+    try {
+      const r = await fetch(base + path, { headers, signal: ctl.signal });
+      if (!r.ok) throw new Error(r.status);
+      return await r.json();
+    } finally { clearTimeout(timer); }
+  };
+  try {
+    const [mixes, shows] = await Promise.all([
+      get("mixes?select=*&order=featured.desc,released_on.desc.nullslast"),
+      get("shows?select=*&order=show_date.desc")
+    ]);
+    return { mixes, shows };
+  } catch (e) {
+    console.warn("Showing built-in content; database unavailable:", e);
+    return FALLBACK;
+  }
+}
+
+function coverArt(m, i, total) {
+  // Generated cover for mixes without artwork: waveform bars seeded from the title.
   const c = document.createElement("canvas");
   c.className = "art"; c.width = 440; c.height = 440;
   c.setAttribute("role", "img"); c.setAttribute("aria-label", `${m.title} cover`);
   const g = c.getContext("2d");
-  let s = Number(m.id.slice(-6));
+  let s = [...String(m.title)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) % 233280, 7);
   const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
   const css = getComputedStyle(document.documentElement);
-  const ground = css.getPropertyValue("--panel").trim() || "#22100f";
-  const sodium = css.getPropertyValue("--neon").trim() || "#2ec4ff";
-  const ember = css.getPropertyValue("--violet").trim() || "#7b3cff";
-  const bone = css.getPropertyValue("--bone").trim() || "#f1e6da";
+  const neon = css.getPropertyValue("--neon").trim() || "#2ec4ff";
+  const violet = css.getPropertyValue("--violet").trim() || "#7b3cff";
+  const pink = css.getPropertyValue("--pink").trim() || "#ff2e93";
+  const bone = css.getPropertyValue("--bone").trim() || "#eef1ff";
   g.fillStyle = "#07060f"; g.fillRect(0, 0, 440, 440);
   const bars = 44, w = 440 / bars;
   for (let b = 0; b < bars; b++) {
     const h = (0.15 + Math.pow(rnd(), 1.6) * 0.8) * 300;
-    g.fillStyle = b % 7 === i % 7 ? sodium : ember;
+    g.fillStyle = b % 7 === i % 7 ? neon : violet;
     g.globalAlpha = 0.55 + rnd() * 0.45;
     g.fillRect(b * w + 1, 220 - h / 2, w - 3, h);
   }
@@ -346,41 +373,45 @@ function coverArt(m, i) {
   g.font = "900 64px 'Big Shoulders Stencil Display', Impact, sans-serif";
   g.fillText("TM2K", 22, 410);
   g.font = "600 18px 'JetBrains Mono', monospace";
-  g.fillStyle = sodium;
-  g.fillStyle = css.getPropertyValue("--pink").trim() || "#ff2e93";
-  g.fillText(String(MIXES.length - i).padStart(2, "0"), 380, 40);
+  g.fillStyle = pink;
+  g.fillText(String(total - i).padStart(2, "0"), 380, 40);
   return c;
 }
 
-function render() {
+function renderMixes(mixes) {
   const list = document.getElementById("mixList");
-  MIXES.forEach((m, i) => {
+  list.replaceChildren();
+  document.getElementById("mixMeta").textContent =
+    `${mixes.length} ${mixes.length === 1 ? "set" : "sets"} on SoundCloud · newest first`;
+  mixes.forEach((m, i) => {
     const card = document.createElement("article");
     card.className = "mix" + (m.featured ? " featured" : "");
+    const art = safeUrl(m.artwork_url);
     let artEl;
-    if (HOSTED) {
+    if (HOSTED && art) {
       artEl = document.createElement("img");
-      artEl.className = "art"; artEl.alt = `${m.title} cover`; artEl.loading = "lazy";
-      artEl.src = `https://i1.sndcdn.com/${m.art}`;
-    } else artEl = coverArt(m, i);
+      artEl.className = "art"; artEl.alt = `${m.title} cover`; artEl.loading = "lazy"; artEl.src = art;
+    } else artEl = coverArt(m, i, mixes.length);
+    const stats = [m.plays != null ? `<span><b>${fmt(m.plays)}</b> plays</span>` : "", m.likes ? `<span><b>${fmt(m.likes)}</b> likes</span>` : ""].join("");
     const body = document.createElement("div");
     body.className = "body";
     body.innerHTML = `
-      <div class="deck"><span class="tag">${m.tag}</span><span>${m.date}</span></div>
-      <h3>${m.title}</h3>
-      <p>${m.blurb}</p>
-      <div class="stats"><span><b>${fmt(m.plays)}</b> plays</span>${m.likes ? `<span><b>${fmt(m.likes)}</b> likes</span>` : ""}</div>
+      <div class="deck">${m.tag ? `<span class="tag">${esc(m.tag)}</span>` : ""}<span>${esc(monthYear(m.released_on))}</span></div>
+      <h3>${esc(m.title)}</h3>
+      ${m.blurb ? `<p>${esc(m.blurb)}</p>` : ""}
+      ${stats ? `<div class="stats">${stats}</div>` : ""}
       <div class="listen"></div>`;
     const listen = body.querySelector(".listen");
-    if (HOSTED) {
+    const sc = safeUrl(m.soundcloud_url);
+    if (HOSTED && (m.track_id || sc)) {
+      const target = m.track_id ? `https://api.soundcloud.com/tracks/${m.track_id}` : sc;
       const f = document.createElement("iframe");
       f.className = "player"; f.loading = "lazy"; f.allow = "autoplay"; f.title = `${m.title} player`;
-      f.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent("https://api.soundcloud.com/tracks/" + m.id)}&color=%23ff2e93&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`;
+      f.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(target)}&color=%23ff2e93&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`;
       listen.appendChild(f);
-    } else {
+    } else if (sc) {
       const a = document.createElement("a");
-      a.href = scUrl(m); a.target = "_blank"; a.rel = "noopener";
-      a.textContent = "▶ Play on SoundCloud ↗";
+      a.href = sc; a.target = "_blank"; a.rel = "noopener"; a.textContent = "▶ Play on SoundCloud ↗";
       listen.appendChild(a);
     }
     card.append(artEl, body);
@@ -388,12 +419,43 @@ function render() {
   });
 }
 
+function showRow(s, upcoming) {
+  const p = parts(s.show_date);
+  const day = s.day_unknown ? MONTHS[p.m - 1].toUpperCase() : String(p.day).padStart(2, "0");
+  const sub = s.day_unknown ? String(p.y) : monthYear(s.show_date);
+  const links = [
+    safeUrl(s.ticket_url) ? `<a href="${esc(s.ticket_url)}" target="_blank" rel="noopener">Tickets ↗</a>` : "",
+    safeUrl(s.recording_url) ? `<a href="${esc(s.recording_url)}" target="_blank" rel="noopener">Hear the set ↗</a>` : ""
+  ].filter(Boolean).join(" ");
+  const venue = [s.venue, s.address].filter(Boolean).map(esc).join(" · ");
+  const li = document.createElement("li");
+  if (upcoming) li.className = "upcoming";
+  li.innerHTML = `
+    <time datetime="${esc(s.show_date)}"><b>${day}</b><span>${esc(sub)}</span></time>
+    <div><h3>${esc(s.title)}</h3><p>${[esc(s.details), s.set_time && upcoming ? `On at ${esc(s.set_time)}.` : "", links].filter(Boolean).join(" ")}</p></div>
+    <span class="venue">${venue}</span>`;
+  return li;
+}
+
+function renderShows(shows) {
+  const today = todayISO();
+  const upcoming = shows.filter(s => s.show_date >= today).sort((a, b) => a.show_date.localeCompare(b.show_date));
+  const past = shows.filter(s => s.show_date < today).sort((a, b) => b.show_date.localeCompare(a.show_date));
+  const up = document.getElementById("upcomingList"), pa = document.getElementById("pastList");
+  up.replaceChildren(...upcoming.map(s => showRow(s, true)));
+  pa.replaceChildren(...past.map(s => showRow(s, false)));
+  document.getElementById("noUpcoming").hidden = upcoming.length > 0;
+  document.getElementById("pastBlock").hidden = past.length === 0;
+  document.getElementById("showMeta").textContent =
+    upcoming.length ? `${upcoming.length} upcoming · St. Louis` : "No dates announced yet";
+}
+
 function wave() {
   const c = document.getElementById("wave");
   const g = c.getContext("2d");
   const css = getComputedStyle(document.documentElement);
-  const sodium = css.getPropertyValue("--neon").trim() || "#2ec4ff";
-  const ember = css.getPropertyValue("--violet").trim() || "#7b3cff";
+  const neon = css.getPropertyValue("--neon").trim() || "#2ec4ff";
+  const violet = css.getPropertyValue("--violet").trim() || "#7b3cff";
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let t = 0;
   function size() {
@@ -410,7 +472,7 @@ function wave() {
       const lfo = 0.5 + 0.5 * Math.sin(x * 18 + t * 2.2);
       const kick = Math.pow(Math.max(0, Math.sin(t * 3.1 - x * 4)), 6);
       const h = H * (0.08 + 0.55 * lfo * (0.5 + 0.5 * Math.sin(x * 5.3 + t)) + 0.35 * kick);
-      g.fillStyle = kick > 0.5 ? sodium : ember;
+      g.fillStyle = kick > 0.5 ? neon : violet;
       g.globalAlpha = 0.35 + 0.5 * lfo;
       g.fillRect(i * bw, H - h, Math.max(1, bw - 2), h);
     }
@@ -432,8 +494,13 @@ document.getElementById("copy").addEventListener("click", async e => {
   setTimeout(() => (btn.textContent = "Copy email"), 2000);
 });
 
-const start = () => { render(); wave(); };
-document.fonts && document.fonts.ready ? document.fonts.ready.then(start) : start();
+async function start() {
+  wave();
+  const data = await loadContent();
+  renderMixes(data.mixes || []);
+  renderShows(data.shows || []);
+}
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(start);
 </script>
 
 </body>
