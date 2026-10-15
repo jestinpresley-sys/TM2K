@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="St. Louis bass and dubstep DJ Cam Carver. Mixes, shows and booking.">
 <meta name="theme-color" content="#07060f">
-<link rel="canonical" href="https://jestinpresley-sys.github.io/TM2K/">
+<link rel="canonical" href="https://thatman2know.com/">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!-- Link previews: iMessage, Instagram, Facebook, Discord, Slack -->
@@ -13,9 +13,9 @@
 <meta property="og:site_name" content="T.M.2.K">
 <meta property="og:title" content="T.M.2.K · Thatman2Know">
 <meta property="og:description" content="St. Louis bass and dubstep DJ Cam Carver. Mixes, shows and booking.">
-<meta property="og:url" content="https://jestinpresley-sys.github.io/TM2K/">
-<meta property="og:image" content="https://jestinpresley-sys.github.io/TM2K/og.jpg">
-<meta property="og:image:secure_url" content="https://jestinpresley-sys.github.io/TM2K/og.jpg">
+<meta property="og:url" content="https://thatman2know.com/">
+<meta property="og:image" content="https://thatman2know.com/og.jpg">
+<meta property="og:image:secure_url" content="https://thatman2know.com/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -24,7 +24,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="T.M.2.K · Thatman2Know">
 <meta name="twitter:description" content="St. Louis bass and dubstep DJ Cam Carver. Mixes, shows and booking.">
-<meta name="twitter:image" content="https://jestinpresley-sys.github.io/TM2K/og.jpg">
+<meta name="twitter:image" content="https://thatman2know.com/og.jpg">
 <title>T.M.2.K</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,6 +163,31 @@ h2 { margin: 0; font: 900 clamp(2.4rem, 7vw, 4rem)/.9 var(--display); text-trans
   .shows .venue { grid-column: 2; text-align: left; color: var(--dust); }
 }
 
+/* Gallery: mosaic of real show photos, tap to enlarge */
+.gallery { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: 120px; gap: 10px; }
+.gallery button { position: relative; padding: 0; border: 0; border-radius: 3px; overflow: hidden; background: var(--panel); cursor: zoom-in; }
+.gallery img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease, filter .4s ease; }
+.gallery button:hover img { transform: scale(1.04); filter: brightness(1.1); }
+.gallery button:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
+.g-crowd { grid-column: span 4; grid-row: span 3; }
+.g-portrait { grid-column: span 2; grid-row: span 3; }
+.g-decks, .g-lasers-green, .g-lasers-purple { grid-column: span 2; grid-row: span 2; }
+.g-booth { grid-column: span 6; grid-row: span 3; }
+.g-crowd img { object-position: 50% 40%; } .g-portrait img { object-position: 50% 20%; } .g-booth img { object-position: 50% 45%; }
+@media (max-width: 640px) {
+  .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 110px; }
+  .g-crowd, .g-booth { grid-column: span 2; grid-row: span 2; }
+  .g-portrait, .g-decks, .g-lasers-green, .g-lasers-purple { grid-column: span 1; grid-row: span 2; }
+}
+.lightbox { width: min(1200px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--ground); color: var(--bone); }
+.lightbox::backdrop { background: rgb(4 3 10 / .88); }
+.lightbox img { display: block; width: 100%; max-height: calc(100dvh - 96px); object-fit: contain; background: #000; }
+.lightbox .bar2 { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 12px; font: 400 .78rem/1.3 var(--mono); color: var(--dust); }
+.lightbox .nav { display: flex; gap: 8px; }
+.lightbox button { min-height: 40px; padding: 8px 14px; border-radius: 3px; border: 1px solid var(--line); background: transparent; color: var(--bone); font: 700 .75rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
+.lightbox button:hover { border-color: var(--pink); color: var(--pink); }
+@media (prefers-reduced-motion: reduce) { .gallery img { transition: none; } }
+
 /* About */
 .about { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; }
 .about p { margin: 0 0 16px; font-size: 1.08rem; max-width: 60ch; }
@@ -193,6 +218,7 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); display: f
     <nav aria-label="Sections">
       <a href="#mixes">Mixes</a>
       <a href="#shows">Shows</a>
+      <a href="#gallery">Gallery</a>
       <a href="#about">About</a>
       <a href="#booking">Booking</a>
     </nav>
@@ -242,6 +268,32 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); display: f
       <h3 class="sub">Past</h3>
       <ol class="shows" id="pastList"></ol>
     </div>
+  </section>
+
+  <section id="gallery">
+    <div class="head">
+      <h2>Gallery</h2>
+      <span class="meta">From the booth · tap to enlarge</span>
+    </div>
+    <div class="gallery" id="galleryGrid">
+      <button class="g-crowd" type="button" data-full="img/gallery/crowd.jpg" aria-label="Enlarge: Cam throwing up peace signs on stage in front of a packed crowd"><img src="img/gallery/crowd-sm.jpg" alt="Cam throwing up peace signs on stage in front of a packed crowd" loading="lazy" decoding="async"></button>
+      <button class="g-portrait" type="button" data-full="img/gallery/portrait.jpg" aria-label="Enlarge: Black-and-white close-up of Cam in headphones at the decks"><img src="img/gallery/portrait-sm.jpg" alt="Black-and-white close-up of Cam in headphones at the decks" loading="lazy" decoding="async"></button>
+      <button class="g-decks" type="button" data-full="img/gallery/decks.jpg" aria-label="Enlarge: Cam mixing under purple and green light"><img src="img/gallery/decks-sm.jpg" alt="Cam mixing under purple and green light" loading="lazy" decoding="async"></button>
+      <button class="g-lasers-green" type="button" data-full="img/gallery/lasers-green.jpg" aria-label="Enlarge: Green, red and purple lasers over the crowd during his set"><img src="img/gallery/lasers-green-sm.jpg" alt="Green, red and purple lasers over the crowd during his set" loading="lazy" decoding="async"></button>
+      <button class="g-lasers-purple" type="button" data-full="img/gallery/lasers-purple.jpg" aria-label="Enlarge: Purple and red lasers cutting across the room from the booth"><img src="img/gallery/lasers-purple-sm.jpg" alt="Purple and red lasers cutting across the room from the booth" loading="lazy" decoding="async"></button>
+      <button class="g-booth" type="button" data-full="img/gallery/booth.jpg" aria-label="Enlarge: Black-and-white view from behind the booth across the crowd and lasers"><img src="img/gallery/booth-sm.jpg" alt="Black-and-white view from behind the booth across the crowd and lasers" loading="lazy" decoding="async"></button>
+    </div>
+    <dialog class="lightbox" id="lightbox" aria-label="Photo">
+      <img id="lbImg" alt="">
+      <div class="bar2">
+        <span id="lbCount"></span>
+        <div class="nav">
+          <button type="button" id="lbPrev">Prev</button>
+          <button type="button" id="lbNext">Next</button>
+          <button type="button" id="lbClose">Close</button>
+        </div>
+      </div>
+    </dialog>
   </section>
 
   <section id="about">
@@ -493,6 +545,28 @@ document.getElementById("copy").addEventListener("click", async e => {
   }
   setTimeout(() => (btn.textContent = "Copy email"), 2000);
 });
+
+
+// Gallery lightbox
+(() => {
+  const btns = [...document.querySelectorAll("#galleryGrid button")];
+  const dlg = document.getElementById("lightbox"), img = document.getElementById("lbImg"), count = document.getElementById("lbCount");
+  let i = 0;
+  const showAt = n => {
+    i = (n + btns.length) % btns.length;
+    img.src = btns[i].dataset.full; img.alt = btns[i].querySelector("img").alt;
+    count.textContent = `${i + 1} / ${btns.length}`;
+  };
+  btns.forEach((b, n) => b.addEventListener("click", () => { showAt(n); dlg.showModal(); }));
+  document.getElementById("lbPrev").addEventListener("click", () => showAt(i - 1));
+  document.getElementById("lbNext").addEventListener("click", () => showAt(i + 1));
+  document.getElementById("lbClose").addEventListener("click", () => dlg.close());
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener("keydown", e => { if (e.key === "ArrowLeft") showAt(i - 1); if (e.key === "ArrowRight") showAt(i + 1); });
+  let x0 = null;
+  img.addEventListener("touchstart", e => (x0 = e.touches[0].clientX), { passive: true });
+  img.addEventListener("touchend", e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) showAt(i + (dx < 0 ? 1 : -1)); x0 = null; });
+})();
 
 async function start() {
   wave();
