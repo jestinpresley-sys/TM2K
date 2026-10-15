@@ -28,9 +28,9 @@ The anon key is designed to be public. The database rules in `schema.sql` let an
 
 1. In Supabase, go to **Authentication → Users → Add user → Create new user**. Enter Cam's email (the one in the `admins` table) and a password, and tick **Auto Confirm User**.
 2. Go to **Authentication → Sign In / Providers** and turn off **Allow new users to sign up**, so nobody else can create an account.
-3. Go to **Authentication → URL Configuration** and set **Site URL** to `https://thatman2know.com/admin/`. The "Email me a link" sign-in sends people there.
+3. Go to **Authentication → URL Configuration** and set **Site URL** to `https://jestinpresley-sys.github.io/TM2K/admin/`. The "Email me a link" sign-in sends people there.
 
-Cam signs in at **https://thatman2know.com/admin/**. Saving it to his home screen makes it feel like an app.
+Cam signs in at **https://jestinpresley-sys.github.io/TM2K/admin/**. Saving it to his home screen makes it feel like an app.
 
 ## Using the admin page
 
