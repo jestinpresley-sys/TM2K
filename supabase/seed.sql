@@ -26,3 +26,11 @@ insert into public.admins (email) values
   ('djthatman2know@gmail.com'),
   ('presleyjestin@gmail.com')
 on conflict do nothing;
+
+-- Added 2026-10-15: F1F set recording.
+insert into public.mixes (soundcloud_url, track_id, title, tag, released_on, blurb, artwork_url, plays, featured) values
+('https://soundcloud.com/user-298775178/f1f-mississippi-underground', '2419222914', 'F1F @ Mississippi Underground', 'Live set', '2026-10-14',
+ 'His set from Mississippi Underground''s charity show for mental health awareness. If you or someone you know is struggling, there''s always an open ear.',
+ 'https://i1.sndcdn.com/artworks-jkEESpmVIlbkjypB-goA0aw-t500x500.jpg', 9, false);
+update public.shows set recording_url = 'https://soundcloud.com/user-298775178/f1f-mississippi-underground'
+ where show_date = '2026-05-01' and title like 'First One%';
