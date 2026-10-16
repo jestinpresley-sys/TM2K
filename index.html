@@ -188,6 +188,9 @@ h2 { margin: 0; font: 900 clamp(2.4rem, 7vw, 4rem)/.9 var(--display); text-trans
 .lightbox button:hover { border-color: var(--pink); color: var(--pink); }
 @media (prefers-reduced-motion: reduce) { .gallery img { transition: none; } }
 
+.credit { color: var(--pink); text-decoration: none; font-weight: 600; }
+.credit:hover { text-decoration: underline; }
+
 /* About */
 .about { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; }
 .about p { margin: 0 0 16px; font-size: 1.08rem; max-width: 60ch; }
@@ -273,20 +276,20 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); display: f
   <section id="gallery">
     <div class="head">
       <h2>Gallery</h2>
-      <span class="meta">From the booth · tap to enlarge</span>
+      <span class="meta">Photos by <a class="credit" href="https://www.instagram.com/michrehm/" target="_blank" rel="noopener">@michrehm</a> · tap to enlarge</span>
     </div>
     <div class="gallery" id="galleryGrid">
-      <button class="g-crowd" type="button" data-full="img/gallery/crowd.jpg" aria-label="Enlarge: Cam throwing up peace signs on stage in front of a packed crowd"><img src="img/gallery/crowd-sm.jpg" alt="Cam throwing up peace signs on stage in front of a packed crowd" loading="lazy" decoding="async"></button>
-      <button class="g-portrait" type="button" data-full="img/gallery/portrait.jpg" aria-label="Enlarge: Black-and-white close-up of Cam in headphones at the decks"><img src="img/gallery/portrait-sm.jpg" alt="Black-and-white close-up of Cam in headphones at the decks" loading="lazy" decoding="async"></button>
-      <button class="g-decks" type="button" data-full="img/gallery/decks.jpg" aria-label="Enlarge: Cam mixing under purple and green light"><img src="img/gallery/decks-sm.jpg" alt="Cam mixing under purple and green light" loading="lazy" decoding="async"></button>
-      <button class="g-lasers-green" type="button" data-full="img/gallery/lasers-green.jpg" aria-label="Enlarge: Green, red and purple lasers over the crowd during his set"><img src="img/gallery/lasers-green-sm.jpg" alt="Green, red and purple lasers over the crowd during his set" loading="lazy" decoding="async"></button>
-      <button class="g-lasers-purple" type="button" data-full="img/gallery/lasers-purple.jpg" aria-label="Enlarge: Purple and red lasers cutting across the room from the booth"><img src="img/gallery/lasers-purple-sm.jpg" alt="Purple and red lasers cutting across the room from the booth" loading="lazy" decoding="async"></button>
-      <button class="g-booth" type="button" data-full="img/gallery/booth.jpg" aria-label="Enlarge: Black-and-white view from behind the booth across the crowd and lasers"><img src="img/gallery/booth-sm.jpg" alt="Black-and-white view from behind the booth across the crowd and lasers" loading="lazy" decoding="async"></button>
+      <button class="g-crowd" type="button" data-full="img/gallery/crowd.jpg" aria-label="Enlarge photo by @michrehm: Cam throwing up peace signs on stage in front of a packed crowd"><img src="img/gallery/crowd-sm.jpg" alt="Cam throwing up peace signs on stage in front of a packed crowd" loading="lazy" decoding="async"></button>
+      <button class="g-portrait" type="button" data-full="img/gallery/portrait.jpg" aria-label="Enlarge photo by @michrehm: Black-and-white close-up of Cam in headphones at the decks"><img src="img/gallery/portrait-sm.jpg" alt="Black-and-white close-up of Cam in headphones at the decks" loading="lazy" decoding="async"></button>
+      <button class="g-decks" type="button" data-full="img/gallery/decks.jpg" aria-label="Enlarge photo by @michrehm: Cam mixing under purple and green light"><img src="img/gallery/decks-sm.jpg" alt="Cam mixing under purple and green light" loading="lazy" decoding="async"></button>
+      <button class="g-lasers-green" type="button" data-full="img/gallery/lasers-green.jpg" aria-label="Enlarge photo by @michrehm: Green, red and purple lasers over the crowd during his set"><img src="img/gallery/lasers-green-sm.jpg" alt="Green, red and purple lasers over the crowd during his set" loading="lazy" decoding="async"></button>
+      <button class="g-lasers-purple" type="button" data-full="img/gallery/lasers-purple.jpg" aria-label="Enlarge photo by @michrehm: Purple and red lasers cutting across the room from the booth"><img src="img/gallery/lasers-purple-sm.jpg" alt="Purple and red lasers cutting across the room from the booth" loading="lazy" decoding="async"></button>
+      <button class="g-booth" type="button" data-full="img/gallery/booth.jpg" aria-label="Enlarge photo by @michrehm: Black-and-white view from behind the booth across the crowd and lasers"><img src="img/gallery/booth-sm.jpg" alt="Black-and-white view from behind the booth across the crowd and lasers" loading="lazy" decoding="async"></button>
     </div>
     <dialog class="lightbox" id="lightbox" aria-label="Photo">
       <img id="lbImg" alt="">
       <div class="bar2">
-        <span id="lbCount"></span>
+        <span><span id="lbCount"></span> · Photo: <a class="credit" href="https://www.instagram.com/michrehm/" target="_blank" rel="noopener">@michrehm</a></span>
         <div class="nav">
           <button type="button" id="lbPrev">Prev</button>
           <button type="button" id="lbNext">Next</button>
