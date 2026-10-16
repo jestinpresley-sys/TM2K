@@ -169,15 +169,14 @@ h2 { margin: 0; font: 900 clamp(2.4rem, 7vw, 4rem)/.9 var(--display); text-trans
 .gallery img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease, filter .4s ease; }
 .gallery button:hover img { transform: scale(1.04); filter: brightness(1.1); }
 .gallery button:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
-.g-crowd { grid-column: span 4; grid-row: span 3; }
-.g-portrait { grid-column: span 2; grid-row: span 3; }
+.g-crowd { grid-column: span 6; grid-row: span 3; }
 .g-decks, .g-lasers-green, .g-lasers-purple { grid-column: span 2; grid-row: span 2; }
 .g-booth { grid-column: span 6; grid-row: span 3; }
-.g-crowd img { object-position: 50% 40%; } .g-portrait img { object-position: 50% 20%; } .g-booth img { object-position: 50% 45%; }
+.g-crowd img { object-position: 50% 40%; } .g-booth img { object-position: 50% 45%; }
 @media (max-width: 640px) {
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 110px; }
-  .g-crowd, .g-booth { grid-column: span 2; grid-row: span 2; }
-  .g-portrait, .g-decks, .g-lasers-green, .g-lasers-purple { grid-column: span 1; grid-row: span 2; }
+  .g-crowd, .g-booth, .g-lasers-purple { grid-column: span 2; grid-row: span 2; }
+  .g-decks, .g-lasers-green { grid-column: span 1; grid-row: span 2; }
 }
 .lightbox { width: min(1200px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--ground); color: var(--bone); }
 .lightbox::backdrop { background: rgb(4 3 10 / .88); }
@@ -280,7 +279,6 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); display: f
     </div>
     <div class="gallery" id="galleryGrid">
       <button class="g-crowd" type="button" data-full="img/gallery/crowd.jpg" aria-label="Enlarge photo by @michrehm: Cam throwing up peace signs on stage in front of a packed crowd"><img src="img/gallery/crowd-sm.jpg" alt="Cam throwing up peace signs on stage in front of a packed crowd" loading="lazy" decoding="async"></button>
-      <button class="g-portrait" type="button" data-full="img/gallery/portrait.jpg" aria-label="Enlarge photo by @michrehm: Black-and-white close-up of Cam in headphones at the decks"><img src="img/gallery/portrait-sm.jpg" alt="Black-and-white close-up of Cam in headphones at the decks" loading="lazy" decoding="async"></button>
       <button class="g-decks" type="button" data-full="img/gallery/decks.jpg" aria-label="Enlarge photo by @michrehm: Cam mixing under purple and green light"><img src="img/gallery/decks-sm.jpg" alt="Cam mixing under purple and green light" loading="lazy" decoding="async"></button>
       <button class="g-lasers-green" type="button" data-full="img/gallery/lasers-green.jpg" aria-label="Enlarge photo by @michrehm: Green, red and purple lasers over the crowd during his set"><img src="img/gallery/lasers-green-sm.jpg" alt="Green, red and purple lasers over the crowd during his set" loading="lazy" decoding="async"></button>
       <button class="g-lasers-purple" type="button" data-full="img/gallery/lasers-purple.jpg" aria-label="Enlarge photo by @michrehm: Purple and red lasers cutting across the room from the booth"><img src="img/gallery/lasers-purple-sm.jpg" alt="Purple and red lasers cutting across the room from the booth" loading="lazy" decoding="async"></button>
